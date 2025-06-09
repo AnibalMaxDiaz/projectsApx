@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabla con LocalStorage</title>
+    <style>
+        table {
+            width: 50%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <table id="miTabla">
+        <tr>
+            <th>Seleccionar</th>
+            <th>Descripción</th>
+        </tr>
+        <tr>
+            <td><input type="checkbox" onchange="guardarEstado(this, 0)"></td>
+            <td>Fila 1</td>
+        </tr>
+        <tr>
+            <td><input type="checkbox" onchange="guardarEstado(this, 1)"></td>
+            <td>Fila 2</td>
+        </tr>
+        <tr>
+            <td><input type="checkbox" onchange="guardarEstado(this, 2)"></td>
+            <td>Fila 3</td>
+        </tr>
+    </table>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            cargarEstado();
+        });
+
+        function guardarEstado(checkbox, index) {
+            let estados = JSON.parse(localStorage.getItem("estadosCheck")) || [];
+            estados[index] = checkbox.checked;
+            localStorage.setItem("estadosCheck", JSON.stringify(estados));
+
+            actualizarColorFila(checkbox, index);
+        }
+
+        function cargarEstado() {
+            let estados = JSON.parse(localStorage.getItem("estadosCheck")) || [];
+            let filas = document.querySelectorAll("#miTabla tr");
+
+            estados.forEach((estado, index) => {
+                if (filas[index + 1]) {
+                    let checkbox = filas[index + 1].querySelector("input[type='checkbox']");
+                    checkbox.checked = estado;
+                    actualizarColorFila(checkbox, index);
+                }
+            });
+        }
+
+        function actualizarColorFila(checkbox, index) {
+            let filas = document.querySelectorAll("#miTabla tr");
+            if (filas[index + 1]) {
+                filas[index + 1].style.backgroundColor = checkbox.checked ? "#90EE90" : "#FFFFFF";
+            }
+        }
+    </script>
+
+</body>
+</html>
